@@ -1,8 +1,9 @@
-import { useContext } from 'react';
+import { useContext,useState } from 'react';
 import { FormContext } from '../context';
 
 export default function Revise() {
   const { task,setTask,setCurrentTask,setIsShow } = useContext(FormContext);
+  const [sortAscending, setSortAscending] = useState(true);
   const reviseTasks = task.filter(t => t.category === 'revised');
 
   function handleDelete(e,t){
@@ -19,6 +20,19 @@ export default function Revise() {
     setIsShow(true);
   }
 
+  function handleSort() {
+    const sortedTasks = [...reviseTasks].sort((a, b) => {
+      const dateA = new Date(a.dueDate);
+      const dateB = new Date(b.dueDate);
+      return sortAscending ? dateA - dateB : dateB - dateA;
+    });
+    setTask((prevTasks) => [
+      ...prevTasks.filter((t) => t.category !== 'revised'), 
+      ...sortedTasks, 
+    ]);
+    setSortAscending(!sortAscending);
+  }
+
 
   return (
     <div className="mb-4 w-full px-2 sm:w-1/2 md:w-1/4">
@@ -26,6 +40,7 @@ export default function Revise() {
         <div className="mb-2 flex items-center justify-between">
           <h3 className="text-lg font-semibold">Revise ({reviseTasks.length})</h3>
           <svg
+          onClick={()=>handleSort()}
             xmlns="http://www.w3.org/2000/svg"
             width="18"
             height="18"

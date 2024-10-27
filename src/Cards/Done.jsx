@@ -1,8 +1,9 @@
-import { useContext } from "react";
+import { useContext,useState} from "react";
 import { FormContext } from "../context";
 
 export default function Done() {
   const { task, setTask, setCurrentTask, setIsShow } = useContext(FormContext);
+  const [sortAscending, setSortAscending] = useState(true);
   const doneTasks = task.filter((t) => t.category === "done");
 
   function handleDelete(e, t) {
@@ -19,12 +20,25 @@ export default function Done() {
     setIsShow(true);
   }
 
+  function handleSort() {
+    const sortedTasks = [...doneTasks].sort((a, b) => {
+      const dateA = new Date(a.dueDate);
+      const dateB = new Date(b.dueDate);
+      return sortAscending ? dateA - dateB : dateB - dateA;
+    });
+    setTask((prevTasks) => [
+      ...prevTasks.filter((t) => t.category !== 'done'), 
+      ...sortedTasks, 
+    ]);
+    setSortAscending(!sortAscending);
+  }
   return (
     <div className="mb-4 w-full px-2 sm:w-1/2 md:w-1/4">
       <div className="rounded-lg bg-teal-500 p-4">
         <div className="mb-2 flex items-center justify-between">
           <h3 className="text-lg font-semibold">Done ({doneTasks.length})</h3>
           <svg
+          onClick={()=>handleSort()}
             xmlns="http://www.w3.org/2000/svg"
             width="18"
             height="18"
