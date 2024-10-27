@@ -1,6 +1,11 @@
-export default function App(){
-    return (
-      <h1 className="bg-red-600">Hello Testing</h1>
-        
-    );
+import Body from "./Body";
+import PopupForm from "./PopupForm";
+export default function App() {
+  return (
+    <>
+      <Body/>
+      <PopupForm/>
+      
+    </>
+  );
 }
