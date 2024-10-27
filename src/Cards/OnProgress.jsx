@@ -2,18 +2,27 @@ import { useContext } from 'react';
 import { FormContext } from '../context';
 
 export default function OnProgress() {
-  const { task } = useContext(FormContext);
+  const { task,setTask } = useContext(FormContext);
+  const inProgressTasks = task.filter(t => t.category === 'inprogress');
+
+  function handleDelete(e,t){
+    e.stopPropagation();
+    e.preventDefault();
+    const filteredItems = task.filter((item)=>item.id!==t.id)
+    setTask([...filteredItems])
+  }
 
   return (
     <div className="mb-4 w-full px-2 sm:w-1/2 md:w-1/4">
       <div className="rounded-lg bg-[#EAB308] p-4">
         <div className="mb-2 flex items-center justify-between">
-          <h3 className="text-lg font-semibold">In Progress ({task.filter(t => t.category === 'in progress').length})</h3>
+          <h3 className="text-lg font-semibold">In Progress ({inProgressTasks.length})</h3>
         </div>
         <div>
-          {task
-            .filter((t) => t.category === 'inprogress')
-            .map((t) => (
+          {inProgressTasks.length === 0 ? (
+            <p className="text-sm text-zinc-300">Task List is empty!</p>
+          ) : (
+            inProgressTasks.map((t) => (
               <div key={t.id} className="mb-4 rounded-lg bg-gray-800 p-4">
                 <div className="flex justify-between">
                   <h4 className="mb-2 flex-1 font-semibold text-blue-500">{t.taskName}</h4>
@@ -29,6 +38,7 @@ export default function OnProgress() {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       className="h-4 w-4 cursor-pointer text-zinc-300"
+                      onClick={(e)=>handleDelete(e,t)}
                     >
                       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                       <path d="M4 7l16 0" />
@@ -56,7 +66,8 @@ export default function OnProgress() {
                 <p className="mb-2 text-sm text-zinc-200">{t.description}</p>
                 <p className="mt-6 text-xs text-zinc-400">{t.dueDate}</p>
               </div>
-            ))}
+            ))
+          )}
         </div>
       </div>
     </div>

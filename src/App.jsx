@@ -5,8 +5,8 @@ import {useState} from 'react'
 export default function App() {
   const [isShow,setIsShow] =useState(false);
   const [task, setTask] = useState([]) 
-  console.log(task)
   
+
   
 
 
