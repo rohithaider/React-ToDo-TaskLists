@@ -1,16 +1,22 @@
-import { useContext } from 'react';
-import { FormContext } from '../context';
+import { useContext } from "react";
+import { FormContext } from "../context";
 
 export default function Done() {
-  const { task,setTask } = useContext(FormContext);
-  const doneTasks = task.filter(t => t.category === 'done');
+  const { task, setTask, setCurrentTask, setIsShow } = useContext(FormContext);
+  const doneTasks = task.filter((t) => t.category === "done");
 
-
-  function handleDelete(e,t){
+  function handleDelete(e, t) {
     e.stopPropagation();
     e.preventDefault();
-    const filteredItems = task.filter((item)=>item.id!==t.id)
-    setTask([...filteredItems])
+    const filteredItems = task.filter((item) => item.id !== t.id);
+    setTask([...filteredItems]);
+  }
+
+  function handleEdit(e, t) {
+    e.stopPropagation();
+    e.preventDefault();
+    setCurrentTask(t);
+    setIsShow(true);
   }
 
   return (
@@ -46,7 +52,9 @@ export default function Done() {
             doneTasks.map((t) => (
               <div key={t.id} className="mb-4 rounded-lg bg-gray-800 p-4">
                 <div className="flex justify-between">
-                  <h4 className="mb-2 font-semibold text-teal-500">{t.taskName}</h4>
+                  <h4 className="mb-2 font-semibold text-teal-500">
+                    {t.taskName}
+                  </h4>
                   <div className="flex gap-2">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -59,7 +67,7 @@ export default function Done() {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       className="h-4 w-4 cursor-pointer text-zinc-300"
-                      onClick={(e)=>handleDelete(e,t)}
+                      onClick={(e) => handleDelete(e, t)}
                     >
                       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                       <path d="M4 7l16 0" />
@@ -69,6 +77,7 @@ export default function Done() {
                       <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
                     </svg>
                     <svg
+                      onClick={(e) => handleEdit(e, t)}
                       className="h-4 w-4 cursor-pointer text-zinc-300"
                       fill="none"
                       stroke="currentColor"

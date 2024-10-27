@@ -1,15 +1,33 @@
 import { useContext } from "react";
 import { FormContext } from "./context";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 
 export default function PopupForm() {
-  const { setIsShow, task, setTask } = useContext(FormContext);
+  const { setIsShow, task, setTask,currentTask,setCurrentTask } = useContext(FormContext);
   const [formData, setFormData] = useState({
     taskName: "",
     description: "",
     dueDate: "",
     category: "",
   });
+
+  useEffect(() => {
+    if (currentTask) {
+      setFormData({
+        taskName: currentTask.taskName,
+        description: currentTask.description,
+        dueDate: currentTask.dueDate,
+        category: currentTask.category,
+      });
+    } else {
+      setFormData({
+        taskName: "",
+        description: "",
+        dueDate: "",
+        category: "",
+      });
+    }
+  }, [currentTask]);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -21,17 +39,29 @@ export default function PopupForm() {
 
   function handleClick(e) {
     e.preventDefault();
-    const newTask = {
-      ...formData,
-      id: crypto.randomUUID(),
-    };
-    setTask([...task, newTask]);
+    if (currentTask) {
+      // Update existing task
+      const updatedTasks = task.map((t) =>
+        t.id === currentTask.id ? { ...t, ...formData } : t
+      );
+      setTask(updatedTasks);
+    } else {
+      // Create new task
+      const newTask = {
+        ...formData,
+        id: crypto.randomUUID(),
+      };
+      setTask([...task, newTask]);
+    }
+    
+    // Reset form and close popup
     setFormData({
       taskName: "",
       description: "",
       dueDate: "",
       category: "",
     });
+    setCurrentTask(null); // Reset the current task
     setIsShow(false);
   }
 

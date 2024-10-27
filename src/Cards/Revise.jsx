@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { FormContext } from '../context';
 
 export default function Revise() {
-  const { task,setTask } = useContext(FormContext);
+  const { task,setTask,setCurrentTask,setIsShow } = useContext(FormContext);
   const reviseTasks = task.filter(t => t.category === 'revised');
 
   function handleDelete(e,t){
@@ -10,6 +10,13 @@ export default function Revise() {
     e.preventDefault();
     const filteredItems = task.filter((item)=>item.id!==t.id)
     setTask([...filteredItems])
+  }
+
+  function handleEdit(e, t) {
+    e.stopPropagation();
+    e.preventDefault();
+    setCurrentTask(t);
+    setIsShow(true);
   }
 
 
@@ -68,6 +75,7 @@ export default function Revise() {
                       <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
                     </svg>
                     <svg
+                      onClick={(e) => handleEdit(e, t)}
                       className="h-4 w-4 cursor-pointer text-zinc-300"
                       fill="none"
                       stroke="currentColor"

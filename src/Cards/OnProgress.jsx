@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { FormContext } from '../context';
 
 export default function OnProgress() {
-  const { task,setTask } = useContext(FormContext);
+  const { task,setTask,setCurrentTask,setIsShow } = useContext(FormContext);
   const inProgressTasks = task.filter(t => t.category === 'inprogress');
 
   function handleDelete(e,t){
@@ -10,6 +10,14 @@ export default function OnProgress() {
     e.preventDefault();
     const filteredItems = task.filter((item)=>item.id!==t.id)
     setTask([...filteredItems])
+  }
+
+  function handleEdit(e,t){
+    e.stopPropagation();
+    e.preventDefault();
+  
+    setCurrentTask(t);
+    setIsShow(true);
   }
 
   return (
@@ -48,6 +56,7 @@ export default function OnProgress() {
                       <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
                     </svg>
                     <svg
+                    onClick={(e)=>handleEdit(e,t)}
                       className="h-4 w-4 cursor-pointer text-zinc-300"
                       fill="none"
                       stroke="currentColor"
