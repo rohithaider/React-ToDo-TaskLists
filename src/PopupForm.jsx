@@ -1,9 +1,10 @@
 import { useContext } from "react";
 import { FormContext } from "./context";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
+import { toast } from "react-toastify"; // Import React Toastify
 
 export default function PopupForm() {
-  const { setIsShow, task, setTask,currentTask,setCurrentTask } = useContext(FormContext);
+  const { setIsShow, task, setTask, currentTask, setCurrentTask } = useContext(FormContext);
   const [formData, setFormData] = useState({
     taskName: "",
     description: "",
@@ -39,29 +40,36 @@ export default function PopupForm() {
 
   function handleClick(e) {
     e.preventDefault();
+
+    // Validation: Check if any field is empty
+    if (!formData.taskName || !formData.description || !formData.dueDate || !formData.category) {
+      toast.warn("Please fill in all fields: Title, Description, Due Date, and Category."); // Show warning
+      return; // Prevent form submission
+    }
+
     if (currentTask) {
-      // Update existing task
+      
       const updatedTasks = task.map((t) =>
         t.id === currentTask.id ? { ...t, ...formData } : t
       );
       setTask(updatedTasks);
     } else {
-      // Create new task
+      
       const newTask = {
         ...formData,
         id: crypto.randomUUID(),
       };
       setTask([...task, newTask]);
     }
+
     
-    // Reset form and close popup
     setFormData({
       taskName: "",
       description: "",
       dueDate: "",
       category: "",
     });
-    setCurrentTask(null); // Reset the current task
+    setCurrentTask(null); 
     setIsShow(false);
   }
 
@@ -137,8 +145,7 @@ export default function PopupForm() {
                 onChange={handleChange}
                 className="w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-white shadow-sm focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500"
               >
-                <option value="">Select a category</option>{" "}
-                
+                <option value="">Select a category</option>
                 <option value="todo">To-Do</option>
                 <option value="inprogress">On Progress</option>
                 <option value="done">Done</option>
@@ -155,7 +162,7 @@ export default function PopupForm() {
                 Cancel
               </button>
               <button
-                onClick={(e) => handleClick(e, formData)}
+                onClick={handleClick}
                 type="submit"
                 className="rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-800"
               >
