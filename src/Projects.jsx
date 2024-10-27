@@ -2,14 +2,19 @@ import Done from "./Cards/Done";
 import OnProgress from "./Cards/OnProgress";
 import Revise from "./Cards/Revise";
 import ToDo from "./Cards/ToDo";
+import {useContext} from 'react'
+import { FormContext } from "./context";
 
 export default function Projects(){
+  const{setIsShow} = useContext(FormContext)
+
+  
     return (
         <div className="mx-auto max-w-7xl p-6">
               <div className="mb-6 flex items-center justify-between">
                 <h2 className="text-2xl font-bold">Projectify</h2>
                 <div className="flex space-x-2">
-                  <button
+                  <button onClick={()=>setIsShow(true)}
                     className="flex items-center rounded-md bg-gray-700 px-4 py-2 text-white"
                   >
                     <svg
